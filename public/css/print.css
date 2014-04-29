@@ -1,0 +1,22 @@
+
+body {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 14pt;
+	font-style: normal;
+	font-weight: normal;
+	background-color: #FFF;
+	color: #000;
+}
+#container h2 {
+	font-size: 18px;
+	font-weight: bold;
+	color: #003;
+	text-align: center;
+	margin-left: 100px;
+}
+
+#container {
+	width: 600px;
+}
+
+
