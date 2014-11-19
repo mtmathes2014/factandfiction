@@ -71,7 +71,7 @@
 		$cellShpng = $custAddress['cell'];
 		
 		
-        render("account_form.php", ["stat" => $stat, "title" => "Check Out", "in_fullName" => $in_fullName,
+        render("account_form.php", ["stat" => $stat, "title" => "My Account", "in_fullName" => $in_fullName,
                                 "streetAddressBlng" => $streetAddressBlng, "cityBlng" => $cityBlng, "stateBlng" => $stateBlng, 
                                 "zipBlng" => $zipBlng, "emailBlng" => $emailBlng, "phoneBlng" => $phoneBlng, "cellBlng" => $cellBlng,
                                 "streetAddressShpng" => $streetAddressShpng, "cityShpng" => $cityShpng, "stateShpng" => $stateShpng, 

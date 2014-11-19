@@ -81,9 +81,9 @@ require_once("../includes/shoppingCartDBFnctns.php");
 					 $in_quantity = (-1) * $in_quantity; 
 					 $amount = $in_quantity * $in_price;
 					 $stat = updateOrder($o_id, $amount, 0, 0, 0);
-					 $stat = adjust_title_quantity($title_id, $in_quantity);
+					 $stat = adjust_title_quantity($in_title_id, $in_quantity);
 					 $oi_id = 0;
-					 $title_id = ' ';
+					 $in_title_id = ' ';
 					 $stat = "logout";
 					 $disableSubBtn = 'disabled="disabled"';
 				 }
@@ -96,8 +96,8 @@ require_once("../includes/shoppingCartDBFnctns.php");
 	}
 
     // display delete order item page with relevant message using $nbrGetItems 
-    render("deleteOrderItem_form.php", ["stat" => $stat, "title" => "Delete Item", "nbrGetItems" => $nbrGetItems,
-                                        "oi_id" => $oi_id, "title_id" => $title_id, "in_title" => $in_title, 
+    render("deleteOrderItem_form.php", ["stat" => $stat, "title" => "Delete Item", "nbrGetItems" => $nbrGetItems, "nbrPostItems" => $nbrPostItems,
+                                        "oi_id" => $oi_id, "in_title_id" => $in_title_id, "in_title" => $in_title, 
 	                                    "in_price" => $in_price, "in_notes" => $in_notes, "in_quantity" => $in_quantity,
 	                                    "disableSubBtn" => $disableSubBtn]); 
 	

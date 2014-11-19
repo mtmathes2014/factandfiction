@@ -20,6 +20,8 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 	$nbrAddressFlds = count($_POST);
 	
 	#print_r($_POST);
+	
+	##echo("\n");
 								
 	if ($nbrAddressFlds < 1)
 	{
@@ -84,7 +86,7 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 	$blngCustAddress['cell'] = $_POST['cellBlng'];
 	if ($_POST['checkShpng'] == 'yes')
 	{
-	    #echo("detected same as billing\n");
+	    ##echo("detected same as billing\n");
 		$blngCustAddress['addresstype'] = 'b';
 	}
 	else
@@ -95,21 +97,42 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 		$shpngCustAddress['city'] = $_POST['cityShpng'];
 		$shpngCustAddress['state_id'] = $_POST['stateShpng'];
 		$shpngCustAddress['zip'] = $_POST['zipShpng'];
-		$shpngCustAddress['email'] = $_POST['email'];
+		$shpngCustAddress['email'] = $_POST['emailShpng'];
 		$shpngCustAddress['phone'] = $_POST['phoneShpng'];
-		$shpngCustAddress['cell'] = $_POST['cell'];
+		$shpngCustAddress['cell'] = $_POST['cellShpng'];
 	}
 	
 }
+
+function checkBillingAddressType($blngAddress)
+{
+
+    if ($blngAddress['addresstype'] <> 'b')
+    {
+        return false;
+    }
+    else
+    {
+        return true;      
+    }
+ }
+ 
 # mainline starts here
 	
 	$custAddress = array('ca_id'=>0,'addresstype'=>'', 'streetaddress'=>'', 'city'=>'', 'state_id'=>'', 'zip'=>'', 'email'=>'', 'phone'=>'', 'cell'=>'');
 	
 	$blngCustAddress = $custAddress;
 	$shpngCustAddress = $custAddress;
+	$blngCustAddressOld = $custAddress;
+	$shpngCustAddressOld = $custAddress;
+	
+	#  define state variables here
+	$same_as_shipping_new = true;
+	$same_as_shipping_old = true;
 	
 	validateAddressFields($blngCustAddress, $shpngCustAddress);
 	
+	#echo("session status is " . $stat . "\n");
  	if ($stat == 'logout')
   	{	
 		#echo("begin address processing\n");
@@ -119,39 +142,91 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 		$username = trim($username);
 		$password = $user_info['password'];
 		$password = trim($password);
+		
 		$in_fullName = $user_info['firstname'] . ' ' . $user_info['lastname'];
 		$shpngFullName = $in_fullName;
 		
 		$c_id = getCustomerID($username, $password);
-									 
-		$retval = getBillingAddress($c_id, $custAddress);
+											 
+		$retval = getBillingAddress($c_id, $blngCustAddressOld);
 		
 		#echo("billing address is " . $retval . "\n");
-		
+			
 		$sameasbilling = ' ';
+		$mailAddressType = ' ';
 		
 		if ($retval == 'addrsfnd')
-		{		
-			$blngCustAddress = $custAddress;
-			$mailAddressType = $blngCustAddress['addresstype'];
-			if ($mailAddressType == 'b')
-			{
-				$sameasbilling = 'checked="checked"';
-				$shpngFullName = 'Same As Billing';
+		{
+            $same_as_shipping_old = checkBillingAddressType($blngCustAddressOld);
+            if ($same_as_shipping_old == false)
+            {
+                $retval = getShippingAddress($c_id, $shpngCustAddressOld);
+                #echo("shipping address is " . $retval . "\n");
+                if ($retval <> 'addrsfnd')
+                {
+			        apologize("Unable to retrieve Shipping Address.");
+                }           
+            }
+	
+	        $same_as_shipping_new = checkBillingAddressType($blngCustAddress);
+	        
+            if ($same_as_shipping_old == true)
+            {
+                if ($same_as_shipping_new == false)
+			    {
+			        $blngCustAddress['addresstype'] = 's';
+			        $retval =  addCustAddress($c_id, $shpngCustAddress);
+			        #echo("add shipping address is " . $retval . "\n"); 
+			        if ($retval  <> 'addrsinserted')
+					{
+					    apologize("Unable to add Shipping Address.");
+					}       
+			    }
+			    else
+			    {
+			        $sameasbilling = 'checked="checked"';
+				    $shpngFullName = 'Same As Billing';
+			    }
+            }
+            else
+            {
+                if ($same_as_shipping_new == true)
+                {
+                    $blngCustAddress['addresstype'] = 'b';
+                    $retval =  deleteCustAddress($shpngCustAddressOld['ca_id']);
+                    #echo("delete shipping address is " . $retval . "\n");
+                    if ($retval  <> 'addrsdeleted')
+					{
+					    apologize("Unable to delete Old Shipping Address.");
+					}
+                    $sameasbilling = 'checked="checked"';
+				    $shpngFullName = 'Same As Billing'; 
+                }
+                else
+                {
+                    $shpngCustAddress['ca_id'] = $shpngCustAddressOld['ca_id'];
+					$retval = updateCustAddress($shpngCustAddressOld['ca_id'], $shpngCustAddress);
+					#echo("update shipping address is " . $retval . "\n");
+					if ($retval  <> 'addrsupdated')
+					{
+					    apologize("Unable to update Shipping Address.");
+					}
+			    }
+					
 			}
-			else
+			$blngCustAddress['ca_id'] = $blngCustAddressOld['ca_id'];
+			$retval = updateCustAddress($blngCustAddressOld['ca_id'], $blngCustAddress);
+			#echo ("The billing update return value is ".$retval);
+			if ($retval  <> 'addrsupdated')
 			{
-				$retval = getShippingAddress($c_id, $custAddress);
-				if ($retval == 'addrsfnd')
-				{
-					$shpngCustAddress = $custAddress;
-				}
+			    apologize("Unable to update Billing Address.");
 			}
 		}
 		else
 		{
 			$sameasbilling = ' ';
 			$retval =  addCustAddress($c_id, $blngCustAddress);
+			#echo("add billing address is " . $retval . "\n");
 			if ($retval == 'addrsinserted')
 			{
 				$mailAddressType = $blngCustAddress['addresstype'];
@@ -163,6 +238,11 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 				else
 				{
 					$retval =  addCustAddress($c_id, $shpngCustAddress);
+					#echo("add shipping address is " . $retval . "\n");
+					if ($retval  <> 'addrsupdated')
+	                {
+	                    apologize("Unable to update Shipping Address.");
+	                }
 				}
 			}
 			else
@@ -170,39 +250,24 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 				$sameasbilling = ' ';	
 			}
 		}
-	}
-	else
-	{
-		$stat = 'login';
-	}
-    
-    $streetAddressBlng = $blngCustAddress['streetaddress'];
-	$cityBlng = $blngCustAddress['city'];
-	$stateBlng = $blngCustAddress['state_id'];
-	$zipBlng = $blngCustAddress['zip'];
-	$emailBlng = $blngCustAddress['email'];
-	$phoneBlng = $blngCustAddress['phone'];
-	$cellBlng = $blngCustAddress['cell'];
 		
-	$streetAddressShpng = $shpngCustAddress['streetaddress'];
-	$cityShpng = $shpngCustAddress['city'];
-	$stateShpng = $shpngCustAddress['state_id'];
-	$zipShpng = $shpngCustAddress['zip'];
-	$emailShpng = $shpngCustAddress['email'];
-	$phoneShpng = $shpngCustAddress['phone'];
-	$cellShpng = $shpngCustAddress['cell'];
+		$streetAddressBlng = $blngCustAddress['streetaddress'];
+	    $cityBlng = $blngCustAddress['city'];
+	    $stateBlng = $blngCustAddress['state_id'];
+	    $zipBlng = $blngCustAddress['zip'];
+	    $emailBlng = $blngCustAddress['email'];
+	    $phoneBlng = $blngCustAddress['phone'];
+	    $cellBlng = $blngCustAddress['cell'];
+		
+	    $streetAddressShpng = $shpngCustAddress['streetaddress'];
+	    $cityShpng = $shpngCustAddress['city'];
+	    $stateShpng = $shpngCustAddress['state_id'];
+	    $zipShpng = $shpngCustAddress['zip'];
+	    $emailShpng = $shpngCustAddress['email'];
+	    $phoneShpng = $shpngCustAddress['phone'];
+	    $cellShpng = $shpngCustAddress['cell'];
 	
-    if ($stat == 'login')
-    {
-	    $msg = "We sincerely apologize for allowing you to get to the check out ";
-	    $msg .= "without having logged on.<br />Please click the below link and log in so that we meet your literary needs.";
-	    apologize($msg);
-    }
-    else
-    {
-        
-                  
-            render("accountResult_form.php", ["stat" => $stat, "title" => "Account Result", 
+		 render("accountResult_form.php", ["stat" => $stat, "title" => "Account Result", 
                                                "in_fullName" => $in_fullName, "streetAddressBlng" =>   $streetAddressBlng,
 				                               "cityBlng" => $cityBlng, "stateBlng" => $stateBlng, "zipBlng" => $zipBlng, 
 				                               "emailBlng" => $emailBlng, "phoneBlng" => $phoneBlng, "cellBlng" => $cellBlng,
@@ -210,8 +275,12 @@ function validateAddressFields(&$blngCustAddress, &$shpngCustAddress)
 				                               "sameasbilling" => $sameasbilling, "streetAddressShpng" => $streetAddressShpng,
 				                               "cityShpng"=> $cityShpng, "stateShpng" => $stateShpng, "zipShpng" => $zipShpng,
 				                               "emailShpng" => $emailShpng, "phoneShpng" => $phoneShpng, "cellShpng" => $cellShpng]);
-               
-    }
-    
-
-
+	}
+	else
+	{
+		#$stat = 'login';
+		$msg = "We sincerely apologize for allowing you to get to the account maintenance ";
+	    $msg .= "without having logged on.<br />Please click the below link and log in so that we meet your literary needs.";
+	    apologize($msg);
+	}
+### end of mainline

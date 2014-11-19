@@ -175,7 +175,7 @@ function deleteOrderItemQantity($oi_id)
 	$myDelOrdrItm = "Delete from factandfictionB.orderitem ";
 	$myDelOrdrItm .= " Where oi_id = ? ;";
 	
-	$stat = query($myNewOrderItem, $o_id); 
+	$stat = query($myDelOrdrItm, $oi_id); 
 	
 	return $stat;
 }
@@ -426,7 +426,7 @@ function addCustAddress($c_id, $custAddress)
             $custAddress['phone'], $custAddress['cell']); 
 	
 	
-	if ( $stat )
+	if (!($stat === false))
 	{
 		return 'addrsinserted';
 	}
@@ -436,7 +436,7 @@ function addCustAddress($c_id, $custAddress)
 	}
 		
 }	
-function updateCustAddress($c_id, $custAddress)
+function updateCustAddress($ca_id, $custAddress)
 {
 # set up address update
 	$myQuery = "UPDATE factandfictionB.custAddress ";
@@ -452,10 +452,10 @@ function updateCustAddress($c_id, $custAddress)
  
    $stat = query($myQuery, $custAddress['addresstype'], $custAddress['streetaddress'], 
             $custAddress['city'], $custAddress['state_id'], $custAddress['zip'], $custAddress['email'], 
-            $custAddress['phone'], $custAddress['cell'], $c_id); 
+            $custAddress['phone'], $custAddress['cell'], $ca_id); 
 	
 	
-	if ( $stat )
+	if (!($stat === false))
 	{
 		return 'addrsupdated';
 	}
@@ -465,6 +465,27 @@ function updateCustAddress($c_id, $custAddress)
 	}
 		
 }
+
+function deleteCustAddress($ca_id)
+{
+# set up address update
+	$myQuery = "DELETE from factandfictionB.custAddress ";
+	$myQuery .=  "WHERE ca_id = ? ;";
+ 
+   $stat = query($myQuery, $ca_id); 
+	
+	
+	if (!($stat === false))
+	{
+		return 'addrsdeleted';
+	}
+	else
+	{
+		return 'addrsndelted';
+	}
+		
+}
+
 
 function buildStatmentDetail($_o_id)
 	{

@@ -34,6 +34,16 @@
         </tr>
     </table>
  </form>
+ <div>
+     <!--
+      Below we include the Login Button social plugin. This button uses
+      the JavaScript SDK to present a graphical Login button that triggers
+      the FB.login() function when clicked.
+    -->
+
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+ </div>
  <div> 
   <p style="margin-left:auto;margin-right:auto;width:31%;"><a href="store.php"><img src="graphics/open_book.jpg" width="250" height="203" alt="Browse"></a></p>
   <p >&nbsp;</p>

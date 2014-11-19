@@ -59,6 +59,7 @@
                  <td style="width: 25%; text-align: left; padding: 5px;">Shipping Address:</td>
                  <td style="width: 75%; text-align: left; padding: 5px;">
                     <label>
+                        <input type="hidden" value="no" name="checkShpng">
                         <input name="checkShpng" id="checkShpng" type="checkbox" value="yes" <?=$sameasbilling?> />
                         Same As Billing</label></td>
              </tr>
@@ -77,7 +78,7 @@
            </tr>
            <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">Zip Code: <span class="error">*</span></td>
-                  <td style="width: 75%; text-align: left; padding: 5px;"><input type="text" name="zipShpng" id="zipShpng" size=10maxlength=10 value="<?=$zipShpng?>" style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
+                  <td style="width: 75%; text-align: left; padding: 5px;"><input type="text" name="zipShpng" id="zipShpng" size=10 maxlength=10 value="<?=$zipShpng?>" style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
            </tr>
            <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">Email: </td>
@@ -93,7 +94,7 @@
            </tr>
             <tr>
                  <td style="width: 25%; text-align: left; padding: 5px;">&nbsp;</td>
-                 <td style="width: 75%; text-align: center; padding: 5px;"><input type="submit" name="Sumit" id="Submit"  value="Continue">&nbsp;<input type="button" name="Cancel" id="Cancel" value="Cancel" onclick="history.back()"></td>
+                 <td style="width: 75%; text-align: center; padding: 5px;"><input type="submit" name="Submit" id="Submit"  value="Continue">&nbsp;<input type="button" name="Cancel" id="Cancel" value="Cancel" onclick="history.back()"></td>
            </tr>
         </table>
     </fieldset>
