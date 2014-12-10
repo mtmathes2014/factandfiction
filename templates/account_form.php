@@ -1,6 +1,6 @@
 <?php
      /**
-     * account.php
+     * account_form.php
      *
      * Frank E. Mathes
      * fmathes1@hotmail.com
@@ -14,6 +14,7 @@
 
 ?>
 <p><span class="error">*</span> indicates required information</p>
+<p>Click this link to<a href="password.php"> change your password.</a> </p>
  <form name="addressForm"  id="addressForm" method="post" action="accountResult.php">
     <fieldset>
         <table style="width: 500px; border: solid; margin-left: 150px">

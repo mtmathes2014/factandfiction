@@ -28,6 +28,7 @@
     if (!($results === false))
     {
         $rows = count($results);
+#        echo("<p class='error'>row count = $rows </p>");
        
         if ($rows > 0)
         {

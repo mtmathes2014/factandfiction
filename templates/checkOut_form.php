@@ -18,9 +18,11 @@
     <fieldset>
         <table style="width: 500px; border: solid; margin-left: 150px">
             <tr>
-                  <td style="width: 25%; text-align: left; padding: 5px;"><b>Name: </td>
+                  <td style="width: 25%; text-align: left; padding: 5px;"><b>Bill To: </td>
                   <td style="width: 75%; text-align: left; padding: 5px;"> 
-                    <input type="text" name="fullName" id="fullName" size=15 maxlength=15 value="<?=$in_fullName?>"  readonly="readonly" style=" border: none; background-color:#eef3da; text-align:left; padding: 3px" /></td>
+                    <input type="text" name="fullNameBlng" id="fullNameBlng" size=40 maxlength=40 value="<?=$fullNameBlng?>"  
+                     style=" border: none; background-color:#ffffff; text-align:left; padding: 3px" />
+                 </td>
             </tr>
             <tr>
                  <td style="width: 25%; text-align: left; padding: 5px;">Billing Address:</td>
@@ -29,7 +31,8 @@
             <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">Street Address: <span class="error">*</span> </td>
                   <td style="width: 75%; text-align: left; padding: 5px;">
-                        <input type="text" name="streetAddressBlng" id="streetAddressBlng" size=40 maxlength=40 value="<?=$streetAddressBlng?>" style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
+                        <input type="text" name="streetAddressBlng" id="streetAddressBlng" size=40 maxlength=40 value="<?=$streetAddressBlng?>" 
+                        style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
             </tr>
             <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">City: <span class="error">*</span></td>
@@ -53,23 +56,39 @@
            </tr>
            <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">Cell: </td>
-                  <td style="width: 75%; text-align: left; padding: 5px;"><input type="text" name="cellBlng" id="cellBlng" size=13 maxlength=15 value="<?=$cellBlng?>" style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
+                  <td style="width: 75%; text-align: left; padding: 5px;">
+                    <input type="text" name="cellBlng" id="cellBlng" size=13 maxlength=15 value="<?=$cellBlng?>" 
+                        style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/>
+                 </td>
            </tr>
            <tr>
                  <td style="width: 25%; text-align: left; padding: 5px;">Shipping Address:</td>
                  <td style="width: 75%; text-align: left; padding: 5px;">
                     <label>
+                        <input type="hidden" value="no" name="checkShpng">
                         <input name="checkShpng" id="checkShpng" type="checkbox" value="yes" <?=$sameasbilling?> />
-                        Same As Billing</label></td>
-             </tr>
+                        Same As Billing</label>
+                  </td>  
+            </tr>
+            <tr>
+                 <td style="width: 25%; text-align: left; padding: 5px;">Ship To:</td>
+                 <td style="width: 75%; text-align: left; padding: 5px;">
+                    <input type="text" name="fullNameShpng" id="fullNameShpng" size=40 maxlength=40 value="<?=$fullNameShpng?>" 
+                      style=" border: none; background-color:#ffffff; text-align:left; padding: 3px" />                   
+                </td>
+            </tr>
             <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">Street Address: <span class="error">*</span></td>
-                  <td style="width: 75%; text-align: left; padding: 5px;"><input type="text" name="streetAddressShpng" id="streetAddressShpng" size=40 maxlength=40 value="<?=$streetAddressShpng?>" style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
+                  <td style="width: 75%; text-align: left; padding: 5px;">
+                    <input type="text" name="streetAddressShpng" id="streetAddressShpng" size=40 maxlength=40 value="<?=$streetAddressShpng?>" 
+                     style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
            </tr>
  
            <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">City: <span class="error">*</span></td>
-                  <td style="width: 75%; text-align: left; padding: 5px;"><input type="text" name="cityShpng" id="cityShpng" size=40 maxlength=40 value="<?=$cityShpng?>" style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
+                  <td style="width: 75%; text-align: left; padding: 5px;">
+                    <input type="text" name="cityShpng" id="cityShpng" size=40 maxlength=40 value="<?=$cityShpng?>" 
+                        style=" border: none; background-color:#ffffff; text-align:left; padding: 3px"/></td>
            </tr>
             <tr>
                   <td style="width: 25%; text-align: left; padding: 5px;">State: <span class="error">*</span></td>
@@ -93,7 +112,7 @@
            </tr>
             <tr>
                  <td style="width: 25%; text-align: left; padding: 5px;">&nbsp;</td>
-                 <td style="width: 75%; text-align: center; padding: 5px;"><input type="submit" name="Sumit" id="Submit"  value="Continue">&nbsp;<input type="button" name="Cancel" id="Cancel" value="Cancel" onclick="history.back()"></td>
+                 <td style="width: 75%; text-align: center; padding: 5px;"><input type="submit" name="Submit" id="Submit"  value="Continue">&nbsp;<input type="button" name="Cancel" id="Cancel" value="Cancel" onclick="history.back()"></td>
            </tr>
         </table>
     </fieldset>

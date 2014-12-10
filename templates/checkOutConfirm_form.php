@@ -8,8 +8,8 @@
      </tr>
     <tr>
       <td style="width: 34%; border: none; text-align: left; padding: 5px; font-weight: bold;"><b>Name: </td>
-      <td style="width: 33%; border: none; text-align: left; padding: 5px;"> <?=$in_fullName?></td>
-      <td style="width: 33%; border: none; text-align: left; padding: 5px;"> <?=$shpngFullName?></td>
+      <td style="width: 33%; border: none; text-align: left; padding: 5px;"> <?= $fullNameBlng?></td>
+      <td style="width: 33%; border: none; text-align: left; padding: 5px;"> <?=$shpngFullName . $fullNameShpng?></td>
     </tr>
     <tr>
       <td style="width: 34%; border: none;  text-align: left; padding: 5px; font-weight: bold;">Street Address: </td>

@@ -15,7 +15,7 @@
      */
   
     // fact and fiction website database's name
-    define("DATABASE", "factandfictionB");
+    define("DATABASE", "factandfictionC");
 
     // your database's password
     define("PASSWORD", "crimson");

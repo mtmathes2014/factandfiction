@@ -39,7 +39,7 @@ function register(&$user_info)
 	$myNewUser = "Insert into customer (username, password, firstname, lastname) ";
 	$myNewUser .=  " values (?, ?, ?, ?);";
 		
-	$stat = query($myNewUser, $in_username, $in_password, $in_firstname, $in_lastname);
+	$stat = query($myNewUser, $in_username, crypt($in_password), $in_firstname, $in_lastname);
 	if (!($stat === false))
 	{
 		return "addokay";
@@ -63,6 +63,9 @@ function login(&$user_info)
 	
 	$in_username = trim($in_username);
 	$in_password = trim($in_password);
+	
+#	echo("<p class='error'>user name = $in_username </p>");
+#	echo("<p class='error'>password = $in_password </p>");
 	
 	# set up query for username password combination
 	$myQuery = "SELECT username, password, firstname, lastname ";
@@ -106,6 +109,27 @@ function login(&$user_info)
    {
 		return 'userntfnd';
    }
+}
+
+function changePassword($c_id, $password)
+{
+    $updtsql = "UPDATE `customer` ";
+    $updtsql .= " SET `password` = ? ";
+    $updtsql .= " WHERE `c_id` = ? ";
+    
+    $parm1 = crypt($password);
+#    echo ("<p class='error'>password   $password  encrypted to  $parm1 </p>");
+    $parm2 = $c_id;
+    
+	$updstat = query($updtsql, $parm1, $parm2);
+	if ($updstat === false)
+	{
+		return 'updtntcmplt';
+	}
+	else
+	{
+   		return 'updtcmplt';
+	}
 }
 
 function encrypt_all_pwds() 

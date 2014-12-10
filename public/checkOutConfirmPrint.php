@@ -18,10 +18,32 @@
 
 # mainline starts here
 	
-	$custAddress = array('ca_id'=>0,'addresstype'=>'', 'streetaddress'=>'', 'city'=>'', 'state_id'=>'', 'zip'=>'', 'email'=>'', 'phone'=>'', 'cell'=>'');
+	// initialize the order address information array
+	$ordrAddress = array('oa_id'=>0,'addresstype'=>'', 'fullName'=>'', 
+	                     'streetAddress'=>'', 'city'=>'', 'state_id'=>'', 'zip'=>'', 
+	                     'email'=>'', 'phone'=>'', 'cell'=>'');
+	                     
+	// initialize the order billing address fields
+	$fullNameBlng = $ordrAddress['fullName'];
+    $streetAddressBlng = $ordrAddress['streetAddress'];
+    $cityBlng = $ordrAddress['city'];
+    $stateBlng = $ordrAddress['state_id'];
+    $zipBlng = $ordrAddress['zip'];
+    $emailBlng = $ordrAddress['email'];
+    $phoneBlng = $ordrAddress['phone'];
+    $cellBlng = $ordrAddress['cell'];
 	
-	$blngCustAddress = $custAddress;
-	$shpngCustAddress = $custAddress;
+	// initialize the order shipping address fields
+	$fullNameShpng = $ordrAddress['fullName'];
+    $streetAddressShpng = $ordrAddress['streetAddress'];
+    $cityShpng = $ordrAddress['city'];
+    $stateShpng = $ordrAddress['state_id'];
+    $zipShpng = $ordrAddress['zip'];
+    $emailShpng = $ordrAddress['email'];
+    $phoneShpng = $ordrAddress['phone'];
+    $cellShpng = $ordrAddress['cell'];
+		
+	$o_id = $_GET['o_id'];	
 		
  	if ($stat == 'logout')
   	{	
@@ -33,56 +55,70 @@
 		$password = $user_info['password'];
 		$password = trim($password);
 		$in_fullName = $user_info['firstname'] . ' ' . $user_info['lastname'];
-		$shpngFullName = $in_fullName;
+		$shpngFullName = "Same As Billing";
 		
-		$c_id = getCustomerID($username, $password);
+#		$c_id = getCustomerID($username, $password);
+		
+#		// get the order address information array
+#		$o_id = getOrderId($c_id);
+#		echo("<p class='error'>Order id  = $o_id </p>");
+		if ($o_id > 0)
+		{
+			// attempt to obtain the billing address information
+		    $retval = getOrderBillingAddress($o_id, $ordrAddress);
+		    if ($retval == 'addrsfnd')
+		    {   
+		        // set up the shipping address information
+		        $fullNameBlng = $ordrAddress['fullName'];
+		        $streetAddressBlng = $ordrAddress['streetAddress'];
+		        $cityBlng = $ordrAddress['city'];
+		        $stateBlng = $ordrAddress['state_id'];
+		        $zipBlng = $ordrAddress['zip'];
+		        $emailBlng = $ordrAddress['email'];
+		        $phoneBlng = $ordrAddress['phone'];
+		        $cellBlng = $ordrAddress['cell'];
+		        $mailAddressType = $ordrAddress['addresstype'];
+		        if ($mailAddressType == 'b')
+		        {
+			        $sameasbilling = 'checked="checked"';
+		        }
+		        else
+		        {
+			        $retval = getOrderShippingAddress($o_id, $ordrAddress);
+			        if ($retval == 'addrsfnd')
+		            {   
+			            $fullNameShpng = $ordrAddress['fullName'];
+	                    $shpngFullName = ' ';
+	                    $streetAddressShpng = $ordrAddress['streetAddress'];
+	                    $cityShpng = $ordrAddress['city'];
+	                    $stateShpng = $ordrAddress['state_id'];
+	                    $zipShpng = $ordrAddress['zip'];
+	                    $emailShpng = $ordrAddress['email'];
+	                    $phoneShpng = $ordrAddress['phone'];
+	                    $cellShpng = $ordrAddress['cell'];
+	                }
+	                else
+		            {
+		                apologize("Unable to get order shipping address info.");
+			        }
+		        }
+		    }
+		    else
+		    {
+		        apologize("Unable to get order billing address info.");
+			}
+	    }
+	    else
+	    {
+	        apologize("Unable to print order confirmation, cannot find order.");
+	    }
 									 
-		$retval = getBillingAddress($c_id, $custAddress);
-		
-		#echo("billing address is " . $retval . "\n");
-		
-		$sameasbilling = ' ';
-		
-		if ($retval == 'addrsfnd')
-		{		
-			$blngCustAddress = $custAddress;
-			$mailAddressType = $blngCustAddress['addresstype'];
-			if ($mailAddressType == 'b')
-			{
-				$sameasbilling = 'checked="checked"';
-				$shpngFullName = 'Same As Billing';
-			}
-			else
-			{
-				$retval = getShippingAddress($c_id, $custAddress);
-				if ($retval == 'addrsfnd')
-				{
-					$shpngCustAddress = $custAddress;
-				}
-			}
-		}
-	}
+    }
 	else
 	{
 		$stat = 'login';
 	}
-    
-    $streetAddressBlng = $blngCustAddress['streetaddress'];
-	$cityBlng = $blngCustAddress['city'];
-	$stateBlng = $blngCustAddress['state_id'];
-	$zipBlng = $blngCustAddress['zip'];
-	$emailBlng = $blngCustAddress['email'];
-	$phoneBlng = $blngCustAddress['phone'];
-	$cellBlng = $blngCustAddress['cell'];
-		
-	$streetAddressShpng = $shpngCustAddress['streetaddress'];
-	$cityShpng = $shpngCustAddress['city'];
-	$stateShpng = $shpngCustAddress['state_id'];
-	$zipShpng = $shpngCustAddress['zip'];
-	$emailShpng = $shpngCustAddress['email'];
-	$phoneShpng = $shpngCustAddress['phone'];
-	$cellShpng = $shpngCustAddress['cell'];
-	
+
     if ($stat == 'login')
     {
 	    $msg = "We sincerely apologize for allowing you to get to the check out ";
@@ -107,13 +143,13 @@
             
             $orderItems = buildStatmentDetail($o_id);
                         
-            // output confirmation screen
+            // output confirmation screen  "sameasbilling" => $sameasbilling, 
             renderPrint("checkOutConfirmPrint_form.php", ["stat" => $stat, "title" => "Order Print", "orderItems" => $orderItems, 
-                                               "in_fullName" => $in_fullName, "streetAddressBlng" =>   $streetAddressBlng,
+                                               "fullNameBlng" => $fullNameBlng,  "streetAddressBlng" =>   $streetAddressBlng,
 				                               "cityBlng" => $cityBlng, "stateBlng" => $stateBlng, "zipBlng" => $zipBlng, 
 				                               "emailBlng" => $emailBlng, "phoneBlng" => $phoneBlng, "cellBlng" => $cellBlng,
-				                               "shpngFullName" => $shpngFullName, "o_id" => $o_id,
-				                               "sameasbilling" => $sameasbilling, "streetAddressShpng" => $streetAddressShpng,
+				                               "shpngFullName" => $shpngFullName, "o_id" => $o_id, "fullNameShpng" =>  $fullNameShpng, 
+				                               "streetAddressShpng" => $streetAddressShpng,
 				                               "cityShpng"=> $cityShpng, "stateShpng" => $stateShpng, "zipShpng" => $zipShpng,
 				                               "emailShpng" => $emailShpng, "phoneShpng" => $phoneShpng, "cellShpng" => $cellShpng]);
         }
